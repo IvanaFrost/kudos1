@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Team Kudos</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f5;color:#1a1a1a;min-height:100vh}
+.app{max-width:780px;margin:0 auto;padding:1.5rem}
+h1{font-size:20px;font-weight:600;margin-bottom:1.5rem;display:flex;align-items:center;gap:8px}
+h1 span{font-size:22px}
+.tab-bar{display:flex;gap:4px;border-bottom:1px solid #e0e0e0;margin-bottom:1.5rem}
+.tab{padding:8px 18px;font-size:14px;border:none;background:none;cursor:pointer;color:#666;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s;font-family:inherit}
+.tab.active{color:#1a1a1a;border-bottom-color:#1a1a1a;font-weight:500}
+.tab:hover:not(.active){color:#1a1a1a}
+.section{display:none}.section.active{display:block}
+.card{background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:1.25rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.metric{background:#f8f8f8;border-radius:8px;padding:1rem;text-align:center}
+.metric .label{font-size:12px;color:#888;margin-bottom:4px}
+.metric .value{font-size:24px;font-weight:600;color:#1a1a1a}
+label{font-size:13px;color:#666;display:block;margin-bottom:6px;margin-top:14px}
+label:first-child{margin-top:0}
+select,input,textarea{width:100%;padding:8px 10px;border:1px solid #ddd;border-radius:8px;font-size:14px;font-family:inherit;background:#fff;color:#1a1a1a;outline:none;transition:border-color .15s}
+select:focus,input:focus,textarea:focus{border-color:#888}
+textarea{resize:vertical;min-height:72px}
+.btn-row{display:flex;gap:8px;margin-top:16px;justify-content:flex-end}
+.btn-primary{background:#1a1a1a;color:#fff;border:none;padding:9px 20px;border-radius:8px;font-size:14px;cursor:pointer;font-weight:500;font-family:inherit}
+.btn-primary:hover{background:#333}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed}
+.feed-item{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid #f0f0f0}
+.feed-item:last-child{border-bottom:none}
+.avatar{width:40px;height:40px;min-width:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500}
+.av-blue{background:#dbeafe;color:#1e40af}
+.av-teal{background:#ccfbf1;color:#0f766e}
+.av-purple{background:#ede9fe;color:#5b21b6}
+.av-amber{background:#fef3c7;color:#92400e}
+.av-coral{background:#fee2e2;color:#991b1b}
+.av-pink{background:#fce7f3;color:#9d174d}
+.av-green{background:#dcfce7;color:#166534}
+.feed-body{flex:1;min-width:0}
+.feed-top{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.feed-name{font-size:14px;font-weight:500}
+.feed-arrow{color:#aaa;font-size:13px}
+.feed-badge{font-size:11px;padding:3px 8px;border-radius:20px;font-weight:500}
+.feed-msg{font-size:13px;color:#666;margin-top:4px;line-height:1.5}
+.feed-time{font-size:11px;color:#aaa;margin-top:4px}
+.rank-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #f0f0f0}
+.rank-row:last-child{border-bottom:none}
+.rank-num{font-size:14px;font-weight:500;color:#aaa;width:22px;text-align:center}
+.rank-info{flex:1;min-width:0}
+.rank-name{font-size:14px;font-weight:500}
+.rank-sub{font-size:12px;color:#888}
+.rank-pts{font-size:15px;font-weight:500}
+.pts-badge{font-size:11px;padding:2px 7px;border-radius:20px;background:#dbeafe;color:#1e40af;font-weight:500}
+.empty{text-align:center;padding:2.5rem 1rem;color:#aaa;font-size:14px}
+.cat-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.cat-chip{padding:6px 14px;border-radius:20px;font-size:13px;cursor:pointer;border:1px solid #e0e0e0;background:#fff;color:#666;transition:all .12s;font-family:inherit}
+.cat-chip:hover{border-color:#aaa}
+.cat-chip.sel{border-color:transparent;font-weight:500}
+.c-teamwork.sel{background:#ccfbf1;color:#0f766e}
+.c-innovation.sel{background:#ede9fe;color:#5b21b6}
+.c-leadership.sel{background:#fef3c7;color:#92400e}
+.c-helpfulness.sel{background:#dbeafe;color:#1e40af}
+.c-quality.sel{background:#fce7f3;color:#9d174d}
+.c-creativity.sel{background:#fee2e2;color:#991b1b}
+.member-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.mtag{font-size:12px;padding:4px 10px;border-radius:20px;background:#ccfbf1;color:#0f766e;font-weight:500;display:flex;align-items:center;gap:4px}
+.mtag button{background:none;border:none;cursor:pointer;color:#0f766e;font-size:14px;padding:0;line-height:1}
+.settings-row{display:flex;gap:8px;margin-top:8px}
+.settings-row input{flex:1}
+.alert{font-size:13px;color:#166534;background:#dcfce7;padding:8px 12px;border-radius:8px;margin-top:10px;display:none}
+.divider{border:none;border-top:1px solid #f0f0f0;margin:1.5rem 0}
+.danger-btn{font-size:13px;padding:7px 16px;border-radius:8px;border:1px solid #fca5a5;background:none;color:#dc2626;cursor:pointer;font-family:inherit}
+.danger-btn:hover{background:#fef2f2}
+</style>
+</head>
+<body>
+<div class="app">
+  <h1><span>🏆</span> Team Kudos</h1>
+
+  <div class="tab-bar">
+    <button class="tab active" onclick="switchTab('give')">❤️ Give kudos</button>
+    <button class="tab" onclick="switchTab('feed')">📋 Feed</button>
+    <button class="tab" onclick="switchTab('board')">🏅 Leaderboard</button>
+    <button class="tab" onclick="switchTab('settings')">⚙️ Team setup</button>
+  </div>
+
+  <div id="tab-give" class="section active">
+    <div class="card">
+      <div class="grid2">
+        <div>
+          <label>From</label>
+          <select id="from-select"></select>
+        </div>
+        <div>
+          <label>To</label>
+          <select id="to-select"></select>
+        </div>
+      </div>
+      <label style="margin-top:14px">Category</label>
+      <div class="cat-grid" id="cat-grid"></div>
+      <label style="margin-top:14px">Message</label>
+      <textarea id="kudo-msg" placeholder="Say why you're giving this kudos…"></textarea>
+      <div class="btn-row">
+        <button class="btn-primary" onclick="sendKudo()">Send kudos →</button>
+      </div>
+      <div class="alert" id="send-alert">✓ Kudos sent!</div>
+    </div>
+  </div>
+
+  <div id="tab-feed" class="section">
+    <div class="grid3" style="margin-bottom:1.5rem" id="stats-grid"></div>
+    <div class="card">
+      <div id="feed-list"></div>
+    </div>
+  </div>
+
+  <div id="tab-board" class="section">
+    <div class="grid2" style="margin-bottom:1.5rem">
+      <div class="card">
+        <div style="font-size:13px;font-weight:500;color:#888;margin-bottom:12px">Most received ↓</div>
+        <div id="lb-received"></div>
+      </div>
+      <div class="card">
+        <div style="font-size:13px;font-weight:500;color:#888;margin-bottom:12px">Most given ↑</div>
+        <div id="lb-given"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div style="font-size:13px;font-weight:500;color:#888;margin-bottom:12px">Top categories</div>
+      <div id="cat-stats"></div>
+    </div>
+  </div>
+
+  <div id="tab-settings" class="section">
+    <div class="card">
+      <div style="font-size:14px;font-weight:600;margin-bottom:4px">Team members</div>
+      <div style="font-size:13px;color:#888;margin-bottom:12px">Add or remove people from your team</div>
+      <div class="settings-row">
+        <input type="text" id="new-member" placeholder="Name…" onkeydown="if(event.key==='Enter')addMember()">
+        <button class="btn-primary" onclick="addMember()">Add</button>
+      </div>
+      <div class="member-tags" id="member-tags"></div>
+      <hr class="divider">
+      <div style="font-size:14px;font-weight:600;margin-bottom:4px">Reset data</div>
+      <div style="font-size:13px;color:#888;margin-bottom:12px">Clear all kudos history and leaderboard</div>
+      <button class="danger-btn" onclick="resetData()">Clear all kudos</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const CATS=[
+  {key:'teamwork',label:'Teamwork',color:'c-teamwork'},
+  {key:'innovation',label:'Innovation',color:'c-innovation'},
+  {key:'leadership',label:'Leadership',color:'c-leadership'},
+  {key:'helpfulness',label:'Helpfulness',color:'c-helpfulness'},
+  {key:'quality',label:'Quality',color:'c-quality'},
+  {key:'creativity',label:'Creativity',color:'c-creativity'}
+];
+const AV_COLORS=['av-blue','av-teal','av-purple','av-amber','av-coral','av-pink','av-green'];
+const BADGE_STYLES={
+  teamwork:{bg:'#ccfbf1',c:'#0f766e'},
+  innovation:{bg:'#ede9fe',c:'#5b21b6'},
+  leadership:{bg:'#fef3c7',c:'#92400e'},
+  helpfulness:{bg:'#dbeafe',c:'#1e40af'},
+  quality:{bg:'#fce7f3',c:'#9d174d'},
+  creativity:{bg:'#fee2e2',c:'#991b1b'}
+};
+const DEFAULT_MEMBERS=['Alex','Jordan','Sam','Taylor','Morgan'];
+const STORAGE_KEY='team-kudos-v1';
+
+let state={members:[...DEFAULT_MEMBERS],kudos:[],selectedCat:null};
+
+function load(){
+  try{const d=localStorage.getItem(STORAGE_KEY);if(d){const p=JSON.parse(d);state.members=p.members||DEFAULT_MEMBERS;state.kudos=p.kudos||[];}}catch(e){}
+  render();
+}
+function save(){
+  try{localStorage.setItem(STORAGE_KEY,JSON.stringify({members:state.members,kudos:state.kudos}));}catch(e){}
+}
+
+function initials(n){return n.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);}
+function avColor(n){let h=0;for(let c of n)h=(h*31+c.charCodeAt(0))%AV_COLORS.length;return AV_COLORS[h];}
+function timeAgo(ts){const s=Math.floor((Date.now()-ts)/1000);if(s<60)return 'just now';if(s<3600)return Math.floor(s/60)+'m ago';if(s<86400)return Math.floor(s/3600)+'h ago';return Math.floor(s/86400)+'d ago';}
+
+function render(){renderSelects();renderCatGrid();renderFeed();renderLeaderboard();renderMemberTags();renderStats();}
+
+function renderSelects(){
+  const m=state.members;
+  ['from-select','to-select'].forEach(id=>{
+    const el=document.getElementById(id);const val=el.value;
+    el.innerHTML='<option value="">Select…</option>'+m.map(n=>`<option value="${n}">${n}</option>`).join('');
+    if(val&&m.includes(val))el.value=val;
+  });
+}
+function renderCatGrid(){
+  document.getElementById('cat-grid').innerHTML=CATS.map(c=>`<button class="cat-chip ${c.color}${state.selectedCat===c.key?' sel':''}" onclick="selCat('${c.key}')">${c.label}</button>`).join('');
+}
+function selCat(k){state.selectedCat=state.selectedCat===k?null:k;renderCatGrid();}
+
+function sendKudo(){
+  const from=document.getElementById('from-select').value;
+  const to=document.getElementById('to-select').value;
+  const msg=document.getElementById('kudo-msg').value.trim();
+  if(!from||!to||!state.selectedCat||!msg||from===to)return;
+  state.kudos.unshift({id:Date.now(),from,to,cat:state.selectedCat,msg,ts:Date.now()});
+  save();
+  document.getElementById('kudo-msg').value='';
+  state.selectedCat=null;
+  renderCatGrid();renderFeed();renderLeaderboard();renderStats();
+  const a=document.getElementById('send-alert');a.style.display='block';
+  setTimeout(()=>a.style.display='none',2500);
+}
+
+function renderFeed(){
+  const fl=document.getElementById('feed-list');
+  if(!state.kudos.length){fl.innerHTML='<div class="empty">No kudos yet — be the first!</div>';return;}
+  fl.innerHTML=state.kudos.slice(0,30).map(k=>{
+    const bs=BADGE_STYLES[k.cat]||{bg:'#f0f0f0',c:'#666'};
+    const cl=CATS.find(c=>c.key===k.cat);
+    return `<div class="feed-item">
+      <div class="avatar ${avColor(k.from)}">${initials(k.from)}</div>
+      <div class="feed-body">
+        <div class="feed-top">
+          <span class="feed-name">${k.from}</span>
+          <span class="feed-arrow">→</span>
+          <span class="feed-name">${k.to}</span>
+          <span class="feed-badge" style="background:${bs.bg};color:${bs.c}">${cl?cl.label:k.cat}</span>
+        </div>
+        <div class="feed-msg">${k.msg}</div>
+        <div class="feed-time">${timeAgo(k.ts)}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderStats(){
+  const g=document.getElementById('stats-grid');
+  const today=state.kudos.filter(k=>Date.now()-k.ts<86400000).length;
+  g.innerHTML=`
+    <div class="metric"><div class="label">Total kudos</div><div class="value">${state.kudos.length}</div></div>
+    <div class="metric"><div class="label">Team members</div><div class="value">${state.members.length}</div></div>
+    <div class="metric"><div class="label">Today</div><div class="value">${today}</div></div>`;
+}
+
+function renderLeaderboard(){
+  const recv={},giv={},cats={};
+  state.kudos.forEach(k=>{recv[k.to]=(recv[k.to]||0)+1;giv[k.from]=(giv[k.from]||0)+1;cats[k.cat]=(cats[k.cat]||0)+1;});
+  const topRecv=Object.entries(recv).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const topGiv=Object.entries(giv).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const medals=['🥇','🥈','🥉','4','5'];
+  function rankHtml(arr){
+    if(!arr.length)return '<div class="empty" style="padding:1.5rem">No data yet</div>';
+    return arr.map(([n,pts],i)=>`<div class="rank-row">
+      <span class="rank-num">${medals[i]}</span>
+      <div class="avatar ${avColor(n)}" style="width:32px;height:32px;min-width:32px;font-size:12px">${initials(n)}</div>
+      <div class="rank-info"><div class="rank-name">${n}</div></div>
+      <div class="rank-pts">${pts} <span class="pts-badge">${pts===1?'kudo':'kudos'}</span></div>
+    </div>`).join('');
+  }
+  document.getElementById('lb-received').innerHTML=rankHtml(topRecv);
+  document.getElementById('lb-given').innerHTML=rankHtml(topGiv);
+  const catArr=Object.entries(cats).sort((a,b)=>b[1]-a[1]);
+  const maxV=catArr.length?catArr[0][1]:1;
+  document.getElementById('cat-stats').innerHTML=catArr.length?catArr.map(([k,v])=>{
+    const bs=BADGE_STYLES[k]||{bg:'#f0f0f0',c:'#666'};
+    const cl=CATS.find(c=>c.key===k);
+    const pct=Math.round(v/maxV*100);
+    return `<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+      <span style="font-size:13px;min-width:90px;padding:3px 9px;border-radius:20px;background:${bs.bg};color:${bs.c}">${cl?cl.label:k}</span>
+      <div style="flex:1;background:#f0f0f0;border-radius:4px;height:8px;overflow:hidden">
+        <div style="width:${pct}%;background:${bs.c};height:100%;border-radius:4px"></div>
+      </div>
+      <span style="font-size:13px;font-weight:500;min-width:28px;text-align:right">${v}</span>
+    </div>`;
+  }).join(''):'<div class="empty" style="padding:1rem">No categories yet</div>';
+}
+
+function renderMemberTags(){
+  document.getElementById('member-tags').innerHTML=state.members.map(n=>`
+    <span class="mtag">${n}<button onclick="removeMember('${n}')" title="Remove ${n}">×</button></span>`).join('');
+}
+function addMember(){
+  const inp=document.getElementById('new-member');const name=inp.value.trim();
+  if(!name||state.members.includes(name))return;
+  state.members.push(name);inp.value='';save();renderSelects();renderMemberTags();renderStats();
+}
+function removeMember(name){
+  state.members=state.members.filter(m=>m!==name);save();renderSelects();renderMemberTags();renderStats();
+}
+function resetData(){
+  if(!confirm('Clear all kudos? This cannot be undone.'))return;
+  state.kudos=[];save();renderFeed();renderLeaderboard();renderStats();
+}
+function switchTab(t){
+  document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('active',['give','feed','board','settings'][i]===t));
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('tab-'+t).classList.add('active');
+}
+load();
+</script>
+</body>
+</html>

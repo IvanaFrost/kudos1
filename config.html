@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Configure Team Kudos</title>
+<script src="https://res.cdn.office.net/teams-js/2.22.0/js/MicrosoftTeams.min.js"></script>
+<style>
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;padding:2rem;color:#1a1a1a}
+h2{font-size:18px;margin-bottom:8px}
+p{font-size:14px;color:#666;margin-bottom:1.5rem;line-height:1.6}
+.ready{background:#dcfce7;color:#166534;padding:10px 14px;border-radius:8px;font-size:14px}
+</style>
+</head>
+<body>
+<h2>🏆 Team Kudos</h2>
+<p>Add this tab to your channel so the whole team can give and receive kudos, view the activity feed, and track the leaderboard together.</p>
+<div class="ready">✓ Ready to add — click Save to continue.</div>
+<script>
+microsoftTeams.app.initialize().then(()=>{
+  microsoftTeams.pages.config.registerOnSaveHandler(saveEvent=>{
+    microsoftTeams.pages.config.setConfig({
+      suggestedDisplayName:'Team Kudos',
+      entityId:'kudos-tab',
+      contentUrl:'https://YOUR-HOSTED-URL/index.html',
+      websiteUrl:'https://YOUR-HOSTED-URL/index.html'
+    });
+    saveEvent.notifySuccess();
+  });
+  microsoftTeams.pages.config.setValidityState(true);
+});
+</script>
+</body>
+</html>
