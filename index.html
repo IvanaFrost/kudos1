@@ -9,7 +9,6 @@
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f5;color:#1a1a1a;min-height:100vh}
 .app{max-width:780px;margin:0 auto;padding:1.5rem}
 h1{font-size:20px;font-weight:600;margin-bottom:1.5rem;display:flex;align-items:center;gap:8px}
-h1 span{font-size:22px}
 .tab-bar{display:flex;gap:4px;border-bottom:1px solid #e0e0e0;margin-bottom:1.5rem}
 .tab{padding:8px 18px;font-size:14px;border:none;background:none;cursor:pointer;color:#666;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s;font-family:inherit}
 .tab.active{color:#1a1a1a;border-bottom-color:#1a1a1a;font-weight:500}
@@ -29,7 +28,6 @@ textarea{resize:vertical;min-height:72px}
 .btn-row{display:flex;gap:8px;margin-top:16px;justify-content:flex-end}
 .btn-primary{background:#1a1a1a;color:#fff;border:none;padding:9px 20px;border-radius:8px;font-size:14px;cursor:pointer;font-weight:500;font-family:inherit}
 .btn-primary:hover{background:#333}
-.btn-primary:disabled{opacity:.4;cursor:not-allowed}
 .feed-item{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid #f0f0f0}
 .feed-item:last-child{border-bottom:none}
 .avatar{width:40px;height:40px;min-width:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500}
@@ -50,15 +48,12 @@ textarea{resize:vertical;min-height:72px}
 .rank-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #f0f0f0}
 .rank-row:last-child{border-bottom:none}
 .rank-num{font-size:14px;font-weight:500;color:#aaa;width:22px;text-align:center}
-.rank-info{flex:1;min-width:0}
+.rank-info{flex:1}
 .rank-name{font-size:14px;font-weight:500}
-.rank-sub{font-size:12px;color:#888}
-.rank-pts{font-size:15px;font-weight:500}
 .pts-badge{font-size:11px;padding:2px 7px;border-radius:20px;background:#dbeafe;color:#1e40af;font-weight:500}
 .empty{text-align:center;padding:2.5rem 1rem;color:#aaa;font-size:14px}
 .cat-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
 .cat-chip{padding:6px 14px;border-radius:20px;font-size:13px;cursor:pointer;border:1px solid #e0e0e0;background:#fff;color:#666;transition:all .12s;font-family:inherit}
-.cat-chip:hover{border-color:#aaa}
 .cat-chip.sel{border-color:transparent;font-weight:500}
 .c-teamwork.sel{background:#ccfbf1;color:#0f766e}
 .c-innovation.sel{background:#ede9fe;color:#5b21b6}
@@ -72,14 +67,14 @@ textarea{resize:vertical;min-height:72px}
 .settings-row{display:flex;gap:8px;margin-top:8px}
 .settings-row input{flex:1}
 .alert{font-size:13px;color:#166534;background:#dcfce7;padding:8px 12px;border-radius:8px;margin-top:10px;display:none}
+.info{font-size:12px;color:#888;background:#f8f8f8;padding:8px 12px;border-radius:8px;margin-bottom:12px}
 .divider{border:none;border-top:1px solid #f0f0f0;margin:1.5rem 0}
 .danger-btn{font-size:13px;padding:7px 16px;border-radius:8px;border:1px solid #fca5a5;background:none;color:#dc2626;cursor:pointer;font-family:inherit}
-.danger-btn:hover{background:#fef2f2}
 </style>
 </head>
 <body>
 <div class="app">
-  <h1><span>🏆</span> Team Kudos</h1>
+  <h1>🏆 Team Kudos</h1>
 
   <div class="tab-bar">
     <button class="tab active" onclick="switchTab('give')">❤️ Give kudos</button>
@@ -91,14 +86,8 @@ textarea{resize:vertical;min-height:72px}
   <div id="tab-give" class="section active">
     <div class="card">
       <div class="grid2">
-        <div>
-          <label>From</label>
-          <select id="from-select"></select>
-        </div>
-        <div>
-          <label>To</label>
-          <select id="to-select"></select>
-        </div>
+        <div><label>From</label><select id="from-select"></select></div>
+        <div><label>To</label><select id="to-select"></select></div>
       </div>
       <label style="margin-top:14px">Category</label>
       <div class="cat-grid" id="cat-grid"></div>
@@ -113,9 +102,7 @@ textarea{resize:vertical;min-height:72px}
 
   <div id="tab-feed" class="section">
     <div class="grid3" style="margin-bottom:1.5rem" id="stats-grid"></div>
-    <div class="card">
-      <div id="feed-list"></div>
-    </div>
+    <div class="card"><div id="feed-list"></div></div>
   </div>
 
   <div id="tab-board" class="section">
@@ -137,16 +124,17 @@ textarea{resize:vertical;min-height:72px}
 
   <div id="tab-settings" class="section">
     <div class="card">
+      <div class="info">⚠️ Note: data is stored in this browser session. For shared persistent data across your team, ask your admin to set up a backend.</div>
       <div style="font-size:14px;font-weight:600;margin-bottom:4px">Team members</div>
-      <div style="font-size:13px;color:#888;margin-bottom:12px">Add or remove people from your team</div>
+      <div style="font-size:13px;color:#888;margin-bottom:12px">Add your team members — they'll appear in the dropdowns</div>
       <div class="settings-row">
-        <input type="text" id="new-member" placeholder="Name…" onkeydown="if(event.key==='Enter')addMember()">
+        <input type="text" id="new-member" placeholder="e.g. Ana, Marko, Stefan…" onkeydown="if(event.key==='Enter')addMember()">
         <button class="btn-primary" onclick="addMember()">Add</button>
       </div>
       <div class="member-tags" id="member-tags"></div>
       <hr class="divider">
       <div style="font-size:14px;font-weight:600;margin-bottom:4px">Reset data</div>
-      <div style="font-size:13px;color:#888;margin-bottom:12px">Clear all kudos history and leaderboard</div>
+      <div style="font-size:13px;color:#888;margin-bottom:12px">Clear all kudos history</div>
       <button class="danger-btn" onclick="resetData()">Clear all kudos</button>
     </div>
   </div>
@@ -161,8 +149,8 @@ const CATS=[
   {key:'quality',label:'Quality',color:'c-quality'},
   {key:'creativity',label:'Creativity',color:'c-creativity'}
 ];
-const AV_COLORS=['av-blue','av-teal','av-purple','av-amber','av-coral','av-pink','av-green'];
-const BADGE_STYLES={
+const AV=['av-blue','av-teal','av-purple','av-amber','av-coral','av-pink','av-green'];
+const BS={
   teamwork:{bg:'#ccfbf1',c:'#0f766e'},
   innovation:{bg:'#ede9fe',c:'#5b21b6'},
   leadership:{bg:'#fef3c7',c:'#92400e'},
@@ -170,21 +158,30 @@ const BADGE_STYLES={
   quality:{bg:'#fce7f3',c:'#9d174d'},
   creativity:{bg:'#fee2e2',c:'#991b1b'}
 };
-const DEFAULT_MEMBERS=['Alex','Jordan','Sam','Taylor','Morgan'];
-const STORAGE_KEY='team-kudos-v1';
 
-let state={members:[...DEFAULT_MEMBERS],kudos:[],selectedCat:null};
+// State — in-memory, survives page interactions but not full reload
+// Uses sessionStorage as a fallback when available, otherwise pure memory
+let state={members:[],kudos:[],selectedCat:null};
+
+function tryStorage(fn){try{return fn();}catch(e){return null;}}
+
+function save(){
+  const d=JSON.stringify({members:state.members,kudos:state.kudos});
+  tryStorage(()=>sessionStorage.setItem('kudos',d));
+  tryStorage(()=>localStorage.setItem('kudos',d));
+}
 
 function load(){
-  try{const d=localStorage.getItem(STORAGE_KEY);if(d){const p=JSON.parse(d);state.members=p.members||DEFAULT_MEMBERS;state.kudos=p.kudos||[];}}catch(e){}
+  const raw=tryStorage(()=>sessionStorage.getItem('kudos'))
+         || tryStorage(()=>localStorage.getItem('kudos'));
+  if(raw){try{const d=JSON.parse(raw);state.members=d.members||[];state.kudos=d.kudos||[];}catch(e){}}
+  // If no members at all, show settings tab so user knows to add them
+  if(!state.members.length) switchTab('settings');
   render();
-}
-function save(){
-  try{localStorage.setItem(STORAGE_KEY,JSON.stringify({members:state.members,kudos:state.kudos}));}catch(e){}
 }
 
 function initials(n){return n.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);}
-function avColor(n){let h=0;for(let c of n)h=(h*31+c.charCodeAt(0))%AV_COLORS.length;return AV_COLORS[h];}
+function avColor(n){let h=0;for(let c of n)h=(h*31+c.charCodeAt(0))%AV.length;return AV[h];}
 function timeAgo(ts){const s=Math.floor((Date.now()-ts)/1000);if(s<60)return 'just now';if(s<3600)return Math.floor(s/60)+'m ago';if(s<86400)return Math.floor(s/3600)+'h ago';return Math.floor(s/86400)+'d ago';}
 
 function render(){renderSelects();renderCatGrid();renderFeed();renderLeaderboard();renderMemberTags();renderStats();}
@@ -193,10 +190,11 @@ function renderSelects(){
   const m=state.members;
   ['from-select','to-select'].forEach(id=>{
     const el=document.getElementById(id);const val=el.value;
-    el.innerHTML='<option value="">Select…</option>'+m.map(n=>`<option value="${n}">${n}</option>`).join('');
+    el.innerHTML='<option value="">— Select person —</option>'+m.map(n=>`<option value="${n}">${n}</option>`).join('');
     if(val&&m.includes(val))el.value=val;
   });
 }
+
 function renderCatGrid(){
   document.getElementById('cat-grid').innerHTML=CATS.map(c=>`<button class="cat-chip ${c.color}${state.selectedCat===c.key?' sel':''}" onclick="selCat('${c.key}')">${c.label}</button>`).join('');
 }
@@ -206,7 +204,8 @@ function sendKudo(){
   const from=document.getElementById('from-select').value;
   const to=document.getElementById('to-select').value;
   const msg=document.getElementById('kudo-msg').value.trim();
-  if(!from||!to||!state.selectedCat||!msg||from===to)return;
+  if(!from||!to||!state.selectedCat||!msg){alert('Please fill in all fields and select a category.');return;}
+  if(from===to){alert('You cannot send kudos to yourself.');return;}
   state.kudos.unshift({id:Date.now(),from,to,cat:state.selectedCat,msg,ts:Date.now()});
   save();
   document.getElementById('kudo-msg').value='';
@@ -219,8 +218,8 @@ function sendKudo(){
 function renderFeed(){
   const fl=document.getElementById('feed-list');
   if(!state.kudos.length){fl.innerHTML='<div class="empty">No kudos yet — be the first!</div>';return;}
-  fl.innerHTML=state.kudos.slice(0,30).map(k=>{
-    const bs=BADGE_STYLES[k.cat]||{bg:'#f0f0f0',c:'#666'};
+  fl.innerHTML=state.kudos.slice(0,50).map(k=>{
+    const bs=BS[k.cat]||{bg:'#f0f0f0',c:'#666'};
     const cl=CATS.find(c=>c.key===k.cat);
     return `<div class="feed-item">
       <div class="avatar ${avColor(k.from)}">${initials(k.from)}</div>
@@ -239,9 +238,8 @@ function renderFeed(){
 }
 
 function renderStats(){
-  const g=document.getElementById('stats-grid');
   const today=state.kudos.filter(k=>Date.now()-k.ts<86400000).length;
-  g.innerHTML=`
+  document.getElementById('stats-grid').innerHTML=`
     <div class="metric"><div class="label">Total kudos</div><div class="value">${state.kudos.length}</div></div>
     <div class="metric"><div class="label">Team members</div><div class="value">${state.members.length}</div></div>
     <div class="metric"><div class="label">Today</div><div class="value">${today}</div></div>`;
@@ -250,57 +248,68 @@ function renderStats(){
 function renderLeaderboard(){
   const recv={},giv={},cats={};
   state.kudos.forEach(k=>{recv[k.to]=(recv[k.to]||0)+1;giv[k.from]=(giv[k.from]||0)+1;cats[k.cat]=(cats[k.cat]||0)+1;});
-  const topRecv=Object.entries(recv).sort((a,b)=>b[1]-a[1]).slice(0,5);
-  const topGiv=Object.entries(giv).sort((a,b)=>b[1]-a[1]).slice(0,5);
   const medals=['🥇','🥈','🥉','4','5'];
   function rankHtml(arr){
-    if(!arr.length)return '<div class="empty" style="padding:1.5rem">No data yet</div>';
+    if(!arr.length)return '<div class="empty" style="padding:1rem">No data yet</div>';
     return arr.map(([n,pts],i)=>`<div class="rank-row">
       <span class="rank-num">${medals[i]}</span>
       <div class="avatar ${avColor(n)}" style="width:32px;height:32px;min-width:32px;font-size:12px">${initials(n)}</div>
       <div class="rank-info"><div class="rank-name">${n}</div></div>
-      <div class="rank-pts">${pts} <span class="pts-badge">${pts===1?'kudo':'kudos'}</span></div>
+      <div>${pts} <span class="pts-badge">${pts===1?'kudo':'kudos'}</span></div>
     </div>`).join('');
   }
-  document.getElementById('lb-received').innerHTML=rankHtml(topRecv);
-  document.getElementById('lb-given').innerHTML=rankHtml(topGiv);
+  document.getElementById('lb-received').innerHTML=rankHtml(Object.entries(recv).sort((a,b)=>b[1]-a[1]).slice(0,5));
+  document.getElementById('lb-given').innerHTML=rankHtml(Object.entries(giv).sort((a,b)=>b[1]-a[1]).slice(0,5));
   const catArr=Object.entries(cats).sort((a,b)=>b[1]-a[1]);
   const maxV=catArr.length?catArr[0][1]:1;
   document.getElementById('cat-stats').innerHTML=catArr.length?catArr.map(([k,v])=>{
-    const bs=BADGE_STYLES[k]||{bg:'#f0f0f0',c:'#666'};
+    const bs=BS[k]||{bg:'#f0f0f0',c:'#666'};
     const cl=CATS.find(c=>c.key===k);
-    const pct=Math.round(v/maxV*100);
     return `<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
       <span style="font-size:13px;min-width:90px;padding:3px 9px;border-radius:20px;background:${bs.bg};color:${bs.c}">${cl?cl.label:k}</span>
       <div style="flex:1;background:#f0f0f0;border-radius:4px;height:8px;overflow:hidden">
-        <div style="width:${pct}%;background:${bs.c};height:100%;border-radius:4px"></div>
+        <div style="width:${Math.round(v/maxV*100)}%;background:${bs.c};height:100%;border-radius:4px"></div>
       </div>
       <span style="font-size:13px;font-weight:500;min-width:28px;text-align:right">${v}</span>
     </div>`;
-  }).join(''):'<div class="empty" style="padding:1rem">No categories yet</div>';
+  }).join(''):'<div class="empty" style="padding:1rem">No data yet</div>';
 }
 
 function renderMemberTags(){
-  document.getElementById('member-tags').innerHTML=state.members.map(n=>`
-    <span class="mtag">${n}<button onclick="removeMember('${n}')" title="Remove ${n}">×</button></span>`).join('');
+  document.getElementById('member-tags').innerHTML=state.members.length
+    ? state.members.map(n=>`<span class="mtag">${n}<button onclick="removeMember('${n}')" title="Remove">×</button></span>`).join('')
+    : '<div style="font-size:13px;color:#aaa;margin-top:8px">No members yet — add your team above</div>';
 }
+
 function addMember(){
-  const inp=document.getElementById('new-member');const name=inp.value.trim();
-  if(!name||state.members.includes(name))return;
-  state.members.push(name);inp.value='';save();renderSelects();renderMemberTags();renderStats();
+  const inp=document.getElementById('new-member');
+  const name=inp.value.trim();
+  if(!name)return;
+  // Support comma-separated bulk add: "Ana, Marko, Stefan"
+  const names=name.split(',').map(n=>n.trim()).filter(n=>n&&!state.members.includes(n));
+  if(!names.length){inp.value='';return;}
+  state.members.push(...names);
+  inp.value='';save();renderSelects();renderMemberTags();renderStats();
 }
+
 function removeMember(name){
-  state.members=state.members.filter(m=>m!==name);save();renderSelects();renderMemberTags();renderStats();
+  if(!confirm(`Remove ${name}?`))return;
+  state.members=state.members.filter(m=>m!==name);
+  save();renderSelects();renderMemberTags();renderStats();
 }
+
 function resetData(){
   if(!confirm('Clear all kudos? This cannot be undone.'))return;
   state.kudos=[];save();renderFeed();renderLeaderboard();renderStats();
 }
+
 function switchTab(t){
-  document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('active',['give','feed','board','settings'][i]===t));
+  const tabs=['give','feed','board','settings'];
+  document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('active',tabs[i]===t));
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.getElementById('tab-'+t).classList.add('active');
 }
+
 load();
 </script>
 </body>
